@@ -1,0 +1,49 @@
+@CHARSET "UTF-8";
+
+.sheepla-sdk-lock{
+	z-index: 10000;
+}
+
+#sheepla-sdk-close-point{
+	z-index:10010;
+}
+
+.sheepla-sdk-area{
+        clear: both;
+	margin-top:20px;
+        margin-left: 25px !important;
+}
+
+#sheepla-plinpost-map{
+	margin:20px;
+	width:530px;
+}
+
+#sheepla-widget-content-plinpost-instruction{
+	list-style-type: square;
+	list-style-position: inside;
+}
+
+#sheepla-widget-city-select-container label{
+	font-size:12px;
+	margin-right:10px;
+	font-weight:bold;
+}
+
+#sheepla-widget-ruqiwipost-paczkomat-container {
+    position: relative;
+}
+#sheepla-widget-ruqiwipost-paczkomat-button {
+    position: absolute;
+    top: -2px;
+    left: 245px;
+}
+#sheepla-widget-ruqiwipost-paczkomat-container label {
+    text-align: left;
+}
+#advice-required-entry-sheepla-widget-ruqiwipost-paczkomat label {
+    margin-bottom: 10px;
+}
+
+.sheepla-carrier-logo-container {width: 60px; display: inline-block; text-align: center;}
+.sheepla-carrier-logo {max-width: 50px; max-height: 50px; margin: auto 0;}

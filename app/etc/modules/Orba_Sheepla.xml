@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <Orba_Sheepla>
+            <active>true</active>
+            <codePool>community</codePool>
+            <!-- if Rugento_Onestepcheckout exists
+            <depends>
+                <Rugento_Onestepcheckout/>
+            </depends>
+            -->
+        </Orba_Sheepla>
+    </modules>
+</config>

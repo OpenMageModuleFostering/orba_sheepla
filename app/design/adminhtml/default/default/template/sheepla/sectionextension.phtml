@@ -1,0 +1,409 @@
+<?php if (Mage::getConfig()->getModuleConfig('Orba_Sheepla')->is('active', 'true')) { ?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo Mage::getStoreConfig('sheepla/api_config/api_widget_css'); ?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('sheepla'); ?>/custom_admin.css">
+
+<script type="text/javascript" src="<?php echo Mage::getStoreConfig('sheepla/api_config/api_widget_js'); ?>"></script>
+
+<script>  
+    
+    <?php if( Mage::helper( 'sheepla/data' )->isSheeplaSection() ) { ?>
+        
+        sheepla.query( document ).ready( function() {
+            
+            // numer nowej metody dostawy
+            var g_nextMethodId = <?php echo Mage::helper('sheepla/data')->getNextShippingMethodId() ?>;
+            var g_patternName = 'method_0';
+            
+            <?php if(Mage::getVersion() < '1.7') { ?>
+                
+                sheepla.query('.entry-edit-head').each(function(key, headerElement) {
+                    
+                    var aElement = sheepla.query(headerElement).find('a');
+                    if(aElement.length &&
+                       sheepla.query(aElement).attr('id').match(/^sheepla_/)) {
+                        
+                        var sectionName = sheepla.query(aElement).attr('id').match(/^sheepla_([^ ]+)-head/);
+                        sectionName = 'sheepla_' + sectionName[1];
+                        
+                        // header
+                        var methodHeader = headerElement;
+                        // state button
+                        var stateButton = sheepla.query('#' + sectionName + '-state');
+                        // fieldset
+                        var fieldset = sheepla.query('fieldset#' + sectionName);
+                        // script
+                        var script = sheepla.query(fieldset).next('script');
+                        
+                        var newMethodContainer = sheepla.query('<div class="section-config"></div>');
+                        
+                        sheepla.query(methodHeader).before(newMethodContainer);
+                        
+                        newMethodContainer.append(methodHeader)
+                                          .append(stateButton)
+                                          .append(fieldset)
+                                          .append(script);  
+                    }
+                });
+                
+            
+            <?php } ?>
+
+            // zapisuję i chowam wzór wierszy.
+
+            var g_pattern = sheepla.query('#sheepla_' + g_patternName + '-state')
+                                   .closest('.section-config');
+                    
+                    
+            // zapisuję uchwyt do formularza aby wkładać do niego nowe pola
+            var g_form = sheepla.query( g_pattern ).closest( 'form' );
+
+
+            sheepla.query( g_pattern ).hide();
+
+
+            // mieszczam wzór poza formularzem aby go nie przesyłać - i tak jest pusty a mógł by zabużyć kolejność
+            sheepla.query( g_pattern ).closest( 'form' ).before( g_pattern );
+
+
+            // dodanie przycisku do wszystkiech tabów
+            var menu = sheepla.query( "<div class='sheepla_delivery_method_menu'></div>" )
+                              .append( '<button type="button" class="sheepla_move_up_shipping scalable"><?php echo Mage::helper( 'sheepla' )->__( 'Move up' ) ?></button>' )
+                              .append( '<button type="button" class="sheepla_move_down_shipping scalable"><?php echo Mage::helper( 'sheepla' )->__( 'Move down' ) ?></button>' )
+                              .append( '<button type="button" class="sheepla_remove_shipping scalable delete"><?php echo Mage::helper( 'sheepla' )->__( 'Delete' ) ?></button>' );
+
+
+            sheepla.query( 'fieldset[id^="sheepla_method_"]' ).each( function() {
+                
+                sheepla.query( this ).append( sheepla.query( menu ).clone() );
+            });
+
+
+            sheepla.query( document ).on( 'click' , '.sheepla_remove_shipping' , function() {
+
+                if( confirm( '<?php echo Mage::helper( 'sheepla' )->__( "Are You sure that You want to remove shipping method?" )?> ' ) ) {
+                    sheepla.query( this ).closest( '.section-config' ).remove();
+                }
+            });
+
+
+
+
+            sheepla.query( document ).on( 'click' , '.sheepla_move_up_shipping' , function() {
+
+                var section = sheepla.query( this ).closest( '.section-config' )
+                var prevSection = sheepla.query( section ).prev( '.section-config ' );
+                if( undefined !== prevSection &&
+                    1 == sheepla.query( prevSection ).find( '.entry-edit-head > a[id^="sheepla_method_"]' ).length ) {
+
+                    sheepla.query( prevSection ).before( section );
+                }
+            });
+
+
+            sheepla.query( document ).on( 'click' , '.sheepla_move_down_shipping' , function() {
+
+                var section = sheepla.query( this ).closest( '.section-config' )
+                var textSection = sheepla.query( section ) .next( '.section-config ' );
+                if( undefined !== textSection &&
+                    1 == sheepla.query( textSection ).find( '.entry-edit-head > a[id^="sheepla_method_"]' ).length ) {
+
+                    sheepla.query( textSection ).after( section );
+                }
+            });
+
+
+
+            // dodanie nowego wiersza
+            // dodanie przycisku dodającego metodę
+            var newMethodButtonHtml = '<button type="button" class="sheepla_new_shipping scalable add"><span><span><span><?php echo Mage::helper( 'sheepla' )->__( "Add new shipping" ) ?></span></span></span></button>';
+            
+            if(1 == <?php echo (int)Mage::getVersion() < '1.7' ?>) {
+                
+                newMethodButtonHtml = '<button type="button" class="sheepla_new_shipping scalable add"><span><?php echo Mage::helper( 'sheepla' )->__( "Add new shipping" ) ?></span></button>'
+            }
+            
+            sheepla.query( newMethodButtonHtml ).prependTo( '.form-buttons' );
+            sheepla.query( document ).on( 'click' , '.sheepla_new_shipping' , function() {
+                
+                var methodId = g_nextMethodId;
+                var patern = sheepla.query( g_pattern ).clone();
+                
+                // zmiana atrybutów id i name elementów w wzorze
+                var t = sheepla.query( patern ).find( '[onclick*="' + g_patternName + '"],[name*="' + g_patternName + '"],[id*="' + g_patternName + '"]' ).each( function( k , v ) {
+
+                    if( sheepla.query( this ).attr( 'id' ) ) {
+
+                        var id = sheepla.query( this ).attr( 'id' ).replace( g_patternName , 'method_' + methodId );
+                        sheepla.query( this ).attr( 'id' , id );
+                    }
+
+                    if( sheepla.query( this ).attr( 'name' ) ) {
+
+                        var name = sheepla.query( this ).attr( 'name' ).replace( g_patternName , 'method_' + methodId );
+                        sheepla.query( this ).attr( 'name' , name );
+                    }
+
+                    if( sheepla.query( this ).attr( 'onclick' ) ) {
+
+                        var onclick = sheepla.query( this ).attr( 'onclick' ).replace( g_patternName , 'method_' + methodId );
+                        sheepla.query( this ).attr( 'onclick' , onclick );
+                    }
+                });
+                
+                if( 1 == sheepla.query( document ).find( '#sheepla_api_config' ).length ) {
+
+                    sheepla.query( g_form ).find( '.section-config:first' ).after( patern );
+
+                } else {
+
+                    sheepla.query( g_form ).find( '.entry-edit' ).prepend( patern );
+                }
+                
+                sheepla.query( patern ).show();
+                
+                // zamiana wartości sort order na jednoznacznąs
+
+                sheepla.query( patern ).find( '[name$="[name][value]"]' ).change(function() {
+
+                    sheepla.query( this ).closest( '.section-config' ).find( '#sheepla_method_' + methodId + '-head' ).html( this.value );
+
+                });
+                
+                new SheeplaSortEntity( sheepla.query( patern ).find( '.entry-edit-head > a[id^="sheepla_method_"]' ), patern );
+                  
+                $( patern ).find( 'script' ).each(function( k , v ) {
+                    
+                    var text = $( this ).innerHTML.replace( /method_0/g , 'method_' + methodId );
+                    eval( text );
+                });
+                
+                g_nextMethodId++;                        
+            });
+
+
+
+            Validation.addAllThese([
+                [
+                    'sheepla-sort_order-unique',      
+                    '<?php echo Mage::helper( 'sheepla' )->__( "This value must be unique" ) ?>',   
+                    function( value , testedInput ) {
+
+                        // jeśli procesowany jest ukryty wiersz zwracam true
+                        if( testedInput.name.match( /method_0/ ) ) {
+                            
+                            return true;
+                        }
+
+                        // nie nie wybieram ukrytego wiersza
+                        var inputs = sheepla.query( '[name$="[sort_order][value]"]:not([name*="method_0"])' );
+
+                        for( var key in inputs ) {
+
+                            if( testedInput.name === inputs[ key ].name ) {
+
+                                continue;
+                            }
+
+                            if( value === inputs[ key ].value ) {
+
+                                return false;
+                            }   
+                        }
+
+                        return true;
+                    } 
+                 ]
+             ]);
+
+
+
+
+
+
+
+
+
+
+             // własny sortable
+             var g_sheeplaSortStatus = 0;
+             var g_sheeplaSortCurrentObject = null;
+
+             function SheeplaSortEntity( handle , container , cfg ) {
+
+                this._container = container; 
+                this._handle = handle;
+                this._cfg = cfg;
+                this._mask = null;
+                this._mouseMoveHandle = null;
+                this._movingDirection = null;
+                this._lastY = 0;
+
+                var _this = this;
+
+
+                sheepla.query( this._handle ).on( 'mousedown' , function( event ) {
+
+                    window.getSelection().removeAllRanges();
+
+                    var cancel = false;
+                    var handleObj = this;
+
+
+                    var documentMouseUpHandle = sheepla.query( document ).on( 'mouseup' , function( event ) {
+
+                        sheepla.query( document ).unbind( 'mouseup' , documentMouseUpHandle );
+
+                        _this.deleteMask();
+                        g_sheeplaSortStatus = 0;
+                        g_sheeplaSortCurrentObject = null;
+
+                        cancel = true;
+
+                        event.stopPropagation();
+                        return false;
+                    });
+
+
+                    window.setTimeout( function() {
+
+                        if( !cancel ) {
+
+                            _this.lastY = event.pageY;
+
+                            if( sheepla.query( _this._container ).is( '.active' ) ) {
+
+                                var id = sheepla.query( handleObj ).attr( 'id' ).split( '-' );
+                                id = id[ 0 ];
+                                Fieldset.toggleCollapse( id , '' );
+                            }
+
+
+                            _this.createMask();
+                            g_sheeplaSortStatus = 1;
+                            g_sheeplaSortCurrentObject = _this;
+                        }
+                    } , 300 );
+
+
+                    event.stopPropagation();
+                    return false;
+                });
+
+
+                sheepla.query( this._container ).on( 'mouseover' , function() {
+
+                    if( 1 === g_sheeplaSortStatus ) {
+
+                        try {
+
+                            if( 'up' === g_sheeplaSortCurrentObject.getDirectin() ) {
+
+                                sheepla.query( this ).before( g_sheeplaSortCurrentObject.getContainer() );
+
+                            } else {
+
+                                sheepla.query( this ).after( g_sheeplaSortCurrentObject.getContainer() );
+                            }
+
+                        } catch( e ) {}
+                    }
+                });
+
+
+                this.createMask = function() {
+
+                    sheepla.query( this._container ).css({
+                        opacity: 0.5
+                    });
+
+                    this._mask = sheepla.query( this._container ).clone();
+
+                    sheepla.query( this._container ).after( this._mask );
+
+                    sheepla.query( this._mask ).css({
+                        display: 'block',
+                        position: 'absolute',
+                        opacity: 1
+                    });
+
+
+                    window.getSelection().removeAllRanges();
+
+                    var mask = this._mask;
+
+                    this._mouseMoveHandle = sheepla.query( document ).on( 'mousemove' , function( event ) {
+
+                        window.getSelection().removeAllRanges();
+
+
+                        if( 0 > _this._lastY - event.pageY ) {
+
+                            _this._movingDirection = 'down';
+
+                        } else {
+
+                            _this._movingDirection = 'up';
+                        }
+
+
+                        _this._lastY = event.pageY;
+
+
+                        sheepla.query( mask ).css({
+                            top: event.pageY - 30 + 'px'
+                        });
+
+
+                        event.stopPropagation();
+                        return false;
+                    });
+                }
+
+                this.deleteMask = function() {
+
+                    sheepla.query( this._container ).css({
+                        opacity: 1 
+                    });
+
+                    if( null !== this._mask ) {
+
+                        sheepla.query( this._mask ).remove();
+                    }
+
+                    sheepla.query( document ).unbind( 'mousemove' , this._mouseMoveHandle );
+
+                    this._mask = null;
+                    this._mouseMoveHandle = null;
+                }
+
+                this.getDirectin = function() {
+
+                    return this._movingDirection; 
+                }
+
+                this.getContainer = function() {
+
+                    return this._container;
+                }
+             }
+
+
+
+             var tabs = sheepla.query( '.section-config > .entry-edit-head > a[id^="sheepla_method_"]' );
+
+             sheepla.query( tabs ).each( function(){
+
+                new SheeplaSortEntity( this , sheepla.query( this ).closest( '.section-config' ) );
+             });
+
+
+        });
+
+    <?php } ?>
+
+        
+    
+</script>
+
+<?php } ?>

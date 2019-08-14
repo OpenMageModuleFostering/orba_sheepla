@@ -1,0 +1,70 @@
+<?php
+/**
+ * 	Created by ORBA|we-commerce your business -> orba.pl
+ */
+?>
+
+<!--Imponujemy standardowy plik css dla pluginu sheepla-->
+<link rel="stylesheet" type="text/css" href="<?php echo Mage::getStoreConfig( 'sheepla/api_config/api_widget_css'); ?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('sheepla'); ?>/custom_admin.css">
+<!--Importujemy bibliotekę JavaScript-->
+<script type="text/javascript" src="<?php echo Mage::getStoreConfig( 'sheepla/api_config/api_widget_js'); ?>"></script>
+
+
+<!--Otwieramy blok kodu typu javascript-->
+<script type="text/javascript">
+    //tworzymy obiekt konfiguracji dla obienktu sheepla
+    sheepla.config = {
+        apikey: '<?php echo Mage::getStoreConfig( 'sheepla/api_config/api_key' ); ?>',
+        cultureId: '<?php echo Mage::helper('sheepla/data')->getCultureIdByLocaleCode(Mage::app()->getLocale()->getLocaleCode()); ?>'
+    };
+    //inicjalizujemy obiekt sheepla
+    sheepla.init();
+    
+    sheepla.query( document ).on( 'change' , '#store_switcher' , function() {
+        
+        var storeId = sheepla.query( this ).val();
+        var storeUrlData = '';
+        var url = document.URL;
+
+        if( 0 < parseInt( storeId ) ) {
+            
+            storeUrlData = '/store/' + sheepla.query( this ).val();
+        }
+        
+        if( url.match( /\/store\// ) ) {
+            
+            url = url.slice( 0 , url.indexOf( '/store/' ) );
+            
+        } else {
+            
+            if( url.match( /\/$/ ) ) {
+                    
+                url = url.slice( 0 , url.length - 1 );
+            }
+        }
+            
+        url += storeUrlData;
+        
+        document.location = url;
+    });
+    
+</script>
+
+
+<?php
+
+echo $this->getChildHtml( 'store_switcher' );
+
+?>
+
+
+
+<div class='sheepla_content grid'></div>
+<script type="text/javascript">
+    //<![CDATA[
+    
+    var table = sheepla.get_shipments('.sheepla_content',1);
+	
+    //]]>
+</script>

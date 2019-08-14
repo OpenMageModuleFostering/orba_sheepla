@@ -1,0 +1,210 @@
+<?php
+/**
+ * 	Created by ORBA|we-commerce your business -> orba.pl
+ */
+?>
+
+<div style="display: none;" class="sheepla-sdk-area"></div>
+
+<script type="text/javascript">
+    //<![CDATA[
+    if (typeof lastPrice == 'undefined') {
+        lastPrice = false;
+    }
+    if (typeof quoteBaseGrandTotal == 'undefined') {
+        quoteBaseGrandTotal = false;
+    }
+    
+</script>
+<?php
+//collect data for sheepla
+//get info on email of the customer
+$city = $this->getAddress()->getCity();
+$country = $this->getAddress()->getCountryId();
+
+if (empty($city)) {
+    $customer = Mage::getSingleton('customer/session')->getCustomer();
+    $city = $customer->getCity();
+}
+//double check
+if (empty($city)) {
+    $city = '';
+}
+
+
+$temp = array();
+$groups = array();
+$shConf = array();
+$showSheepla = false;
+?>
+
+<?php if (!($_shippingRateGroups = $this->getShippingRates())): ?>
+    <p><?php echo $this->__('Sorry, no quotes are available for this order at this time.') ?></p>
+<?php else: ?>
+    <dl class="sp-methods">
+        <?php $shippingCodePrice = array(); ?>
+        <?php
+        $_sole = count($_shippingRateGroups) == 1;
+        foreach ($_shippingRateGroups as $code => $_rates):
+            ?>
+            <dt>
+            <?php if ($code == 'sheepla'): ?>
+                <!-- group and sort sheepla rates -->
+                <?php
+                $methods = array();
+                $groups = array();
+                $shConf = array();
+                $showSheepla = false;
+                         
+                foreach ($_rates as $_rate) {
+                    $conf = Mage::getStoreConfig('sheepla/' . $_rate->getMethod());   
+                    
+                    if($conf['hidden'] == 0 && $conf['enabled'] == 1) {
+                        $methods[] = array('order' => $conf['sort_order'], 'rate' => $_rate);
+                        $shConf[$_rate->getCode()] = $conf;
+                    }
+                }
+				
+                for($currentNum=0;$currentNum<count($methods);$currentNum++) {
+
+                    $nextNum = $currentNum+1;
+
+                    if(isset($methods[$nextNum])) {
+                        $current = $methods[$currentNum];
+                        $next = $methods[$nextNum];
+
+                        if((int)$next['order'] < (int)$current['order']){
+
+                            $methods[$currentNum] = $next;
+                            $methods[$nextNum] = $current;
+
+                            if($currentNum >= 1) {
+
+                                $currentNum -= 2;
+                            }
+                        }
+                    }
+                }
+				
+                $_rates =array();
+                foreach($methods as $method) {
+                    $_rates[] = $method['rate'];
+                }
+                
+                $sConf = Mage::getStoreConfig('sheepla');
+                if (!empty($sConf['advanced']['carrier_label']))
+                    echo $sConf['advanced']['carrier_label'];
+                ?>
+                &nbsp;    
+                
+                
+            <?php else: ?>
+                <?php echo $this->getCarrierName($code) ?>
+            <?php endif; ?>
+            </dt>
+            <dd>
+                <ul>
+                    <?php
+                    $_sole = $_sole && count($_rates) == 1;
+                    foreach ($_rates as $_rate):
+                        ?>
+                        <?php $checkoutPricingHashSession = is_null($_rate->getMethodDescription()) ? 'null' : '\''.$_rate->getMethodDescription().'\''; ?>
+                        <?php $shippingCodePrice[] = "'" . $_rate->getCode() . "':" . (float) $_rate->getPrice(); ?>
+                        <li>
+                            <?php if ($_rate->getErrorMessage()): ?>
+                                <ul class="messages"><li class="error-msg"><ul><li><?php echo $_rate->getErrorMessage() ?></li></ul></li></ul>
+                            <?php else: ?>
+                                <?php if ($_sole) : ?>
+                                
+                                        <input class="no-display" name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>" checked="checked" />
+                                   
+                                    <?php if (key_exists($_rate->getCode(), $shConf) && !empty($shConf[$_rate->getCode()]['template_id'])): ?> 
+                                        <script type="text/javascript">
+                                            //<![CDATA[		
+                                            sheepla_onclick('<?php echo $shConf[$_rate->getCode()]['template_id']; ?>', '.sheepla-sdk-area', '<?php echo $city; ?>', '<?php echo $_rate->getCode(); ?>', '#s_method_<?php echo $_rate->getCode() ?>', <?php echo $checkoutPricingHashSession; ?>, '<?php echo $country ?>');
+                                            //]]>
+                                        </script>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <input name="shipping_method" 
+                                           type="radio" 
+                                           value="<?php echo $_rate->getCode(); ?>"
+                                           id="s_method_<?php echo $_rate->getCode(); ?>"
+                                           <?php if ($_rate->getCode() === $this->getAddressShippingMethod()) echo ' checked="checked"'; ?> 
+                                           class="radio" 
+
+
+                                           <?php if (key_exists($_rate->getCode(), $shConf) && !empty($shConf[$_rate->getCode()]['template_id'])): ?> 
+                                               onclick="sheepla_onclick('<?php echo $shConf[$_rate->getCode()]['template_id']; ?>', '.sheepla-sdk-area', '<?php echo $city; ?>', '<?php echo $_rate->getCode(); ?>', '#s_method_<?php echo $_rate->getCode() ?>', <?php echo $checkoutPricingHashSession; ?>, '<?php echo $country ?>');"
+                                           <?php else: ?>
+                                               onclick="sheepla_onclick(false, '.sheepla-sdk-area', '<?php echo $_rate->getCode(); ?>', '<?php echo $city; ?>', '#s_method_<?php echo $_rate->getCode() ?>', false, <?php echo $checkoutPricingHashSession; ?>, '<?php echo $country ?>');"
+                                           <?php endif; ?>
+
+
+                                           />
+
+                                    <?php if ($_rate->getCode() === $this->getAddressShippingMethod()): ?>
+                                        <script type="text/javascript">
+                                            //<![CDATA[
+                        <?php if (key_exists($_rate->getCode(), $shConf) && !empty($shConf[$_rate->getCode()]['template_id'])): ?>
+                                                sheepla_onclick('<?php echo $shConf[$_rate->getCode()]['template_id']; ?>', '.sheepla-sdk-area', '<?php echo $city; ?>', '<?php echo $_rate->getCode(); ?>', '#s_method_<?php echo $_rate->getCode() ?>', <?php echo $checkoutPricingHashSession; ?>, '<?php echo $country ?>');
+                        <?php endif; ?>
+                                            lastPrice = <?php echo (float) $_rate->getPrice(); ?>;
+                                            //]]>
+                                        </script>
+                                    <?php endif; ?>
+
+                                <?php endif; ?>
+                                <label for="s_method_<?php echo $_rate->getCode() ?>">
+                                    <?php if (isset($shConf[$_rate->getCode()]) && isset($shConf[$_rate->getCode()]['logo_url']) && $shConf[$_rate->getCode()]['logo_url']): ?>
+                                        <span class="sheepla-carrier-logo-container">
+                                            <img class="sheepla-carrier-logo" src="<?php echo $shConf[$_rate->getCode()]['logo_url']; ?>" alt="<?php echo $_rate->getMethodTitle(); ?>" />
+                                        </span>
+                                    <?php endif; ?>
+                                    <?php echo $_rate->getMethodTitle() ?>
+                                    <?php $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
+                                    <?php $_incl = $this->getShippingPrice($_rate->getPrice(), true); ?>
+                                    <?php echo $_excl; ?>
+                                    <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                                        (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                                    <?php endif; ?>
+                                </label>
+                            <?php endif ?>
+
+
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </dd>
+        <?php endforeach; ?>
+    </dl>
+    <script type="text/javascript">
+        //<![CDATA[
+    <?php if (!empty($shippingCodePrice)): ?>
+            var shippingCodePrice = {<?php echo implode(',', $shippingCodePrice); ?>};
+    <?php endif; ?>
+
+        $$('input[type="radio"][name="shipping_method"]').each(function(el) {
+            Event.observe(el, 'click', function() {
+                if (el.checked == true) {
+                    var getShippingCode = el.getValue();
+    <?php if (!empty($shippingCodePrice)): ?>
+                        var newPrice = shippingCodePrice[getShippingCode];
+                        if (!lastPrice) {
+                            lastPrice = newPrice;
+                            quoteBaseGrandTotal += newPrice;
+                        }
+                        if (newPrice != lastPrice) {
+                            quoteBaseGrandTotal += (newPrice - lastPrice);
+                            lastPrice = newPrice;
+                        }
+    <?php endif; ?>
+                    checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
+                    return false;
+                }
+            });
+        });
+        //]]>
+    </script>
+<?php endif; ?>
+

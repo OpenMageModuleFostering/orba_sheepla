@@ -1,0 +1,422 @@
+<?xml version="1.0"?>
+
+<config>
+    <sections>
+        <sheepla translate="label" module="sheepla">
+            <label>Sheepla</label>
+            <tab>sales</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>302</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <api_config translate="label">
+                    <label>Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>0</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <version translate="label">
+                            <label>Sheepla ver.</label>
+                            <frontend_type>select</frontend_type>
+                            <frontend_model>Orba_Sheepla_Block_Admin_Version</frontend_model>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </version>
+                        <api_url translate="label">
+                            <label>API url</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </api_url>
+                        <api_widget_js translate="label">
+                            <label>API Widget JS</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </api_widget_js>
+                        
+                        <api_widget_css translate="label">
+                            <label>API Widget CSS</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </api_widget_css>
+                        <api_key translate="label">
+                            <label>Admin API key</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>You can obtain your API key on sheepla.pl</comment>
+                        </api_key>
+                        <public_api_key translate="label">
+                            <label>Public API key</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>You can obtain your API key on sheepla.pl</comment>
+                        </public_api_key>
+                        <create_shipments translate="label">
+                            <label>Automatically create Sheepla shipments</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </create_shipments>
+                    </fields>
+                </api_config>
+                <!-- deprecated from 0.9.3
+                <tracking translate="label">
+                    <label>Tracking</label>
+                    <sort_order>50</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        <statuses_frontend translate="label">
+                            <label>Statuses to show on frontend</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>Orba_Sheepla_Model_Shipment_Status</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </statuses_frontend>
+                        <statuses_email translate="label">
+                            <label>Statuses to send by e-mail</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>Orba_Sheepla_Model_Shipment_Status</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </statuses_email>
+                        <substatuses_frontend translate="label">
+                            <label>Substatuses to show on frontend</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>Orba_Sheepla_Model_Shipment_Substatus</source_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </substatuses_frontend>
+                        <substatuses_email translate="label">
+                            <label>Substatuses to send by e-mail</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>Orba_Sheepla_Model_Shipment_Substatus</source_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </substatuses_email>
+                    </fields>
+                </tracking> -->
+                
+                
+                <method_pattern translate="label">
+                    <label>New shipping method</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>100</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enabled translate="label">
+                            <label>Active</label>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>                        
+                        <name translate="label">
+                            <label>Name</label>
+                            <comment>Name shown to customer</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </name>
+                        <!-- 
+                        <desc translate="label">
+                            <label>Description</label>
+                            <comment>Description shown to customer</comment>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </desc>
+                        -->
+                        <logo_url translate="label">
+                            <label>Logo URL</label>
+                            <comment>URL to the carrier logo</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </logo_url>
+                        <price translate="label">
+                            <label>Price</label>
+                            <comment>Shipping cost visible to customer</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <validate>validate-number</validate>
+                        </price>
+                        
+                        
+                        <template_id translate="label">
+                            <label>Shipment template</label>
+                            <comment>Shipment template defined in Sheepla used to create shipments</comment>
+                            <source_model>Orba_Sheepla_Model_Template</source_model>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </template_id>
+                        <payment translate="label">
+                            <label>Payment methods</label>
+                            <comment>Payment methods available for this shipping option</comment>
+                            <source_model>Orba_Sheepla_Model_Payment</source_model>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </payment>
+                        <hidden translate="label">
+                            <label>Hidden</label>
+                            <comment>Available to administrators only</comment>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </hidden>
+                        <!--<sort_order translate="label">
+                            <label>Index</label>
+                            <comment>Display order</comment>
+                            <value>1</value>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>80</sort_order>
+                            <validate>validate-number validate-greater-than-zero required-entry sheepla-sort_order-unique</validate>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </sort_order>-->
+                        <allowspecific translate="label">
+                            <label>Ship to Applicable Countries</label>
+                            <frontend_type>allowspecific</frontend_type>
+                            <sort_order>90</sort_order>
+                            <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </allowspecific>
+                        <specificcountry translate="label">
+                            <label>Ship to Specific Countries</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>100</sort_order>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>1</can_be_empty>
+                        </specificcountry>
+                    </fields>
+                </method_pattern>
+                
+                <!--<debug translate="label">
+                    <label>Debug</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1100</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <debug_mode translate="label">
+                            <label>Debug mode</label>
+                            <comment>Display debug info</comment>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </debug_mode>
+                    </fields>
+                </debug>-->
+                <advanced translate="label">
+                    <label>Advanced</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1200</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <order_sync_limit translate="label">
+                            <label>Number of maximum orders to synchronize at once</label>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <validate>validate-number validate-greater-than-zero required-entry sheepla-sort_order-unique</validate>
+                        </order_sync_limit>
+                        <debug_mode translate="label">
+                            <label>Debug mode</label>
+                            <comment>Display debug info</comment>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </debug_mode>
+                        <use_dynamic_pricing translate="label">
+                            <label>Use dynamic pricing</label>
+                            <comment>To use Sheepla dynamic pricing, please activate this mode in Sheepla platform and create basic pricing rules at the current source.</comment>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>3</sort_order> 
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_dynamic_pricing>
+                        <allow_specific_attributes_to_send_id_dp translate="label">
+                            <label>Sending mode attributes in the dynamic pricing</label>
+                            <comment></comment>
+                            <source_model>Orba_Sheepla_Model_Catalog_Product_Allattributes</source_model> 
+                            <frontend_type>select</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <use_dynamic_pricing>1</use_dynamic_pricing>
+                            </depends>
+                        </allow_specific_attributes_to_send_id_dp>
+                        <attributes_to_send_id_dp translate="label">
+                            <label>Attributes to send in dynamic pricing request</label>
+                            <comment></comment>
+                            <source_model>Orba_Sheepla_Model_Catalog_Product_Attributes</source_model> 
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <use_dynamic_pricing>1</use_dynamic_pricing>
+                                <allow_specific_attributes_to_send_id_dp>1</allow_specific_attributes_to_send_id_dp>
+                            </depends>
+                        </attributes_to_send_id_dp>
+                        <comment_order_attach translate="label">
+                            <label>Attach comments to synchronization</label>
+                            <comment>Select type of attached comment</comment>
+                            <source_model>Orba_Sheepla_Model_Comment</source_model>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </comment_order_attach>
+                        <status_to_sync translate="label">
+                            <label>Automatic synchronization status</label>
+                            <comment>Automatic synchronization statuses. Be carefully using this option.</comment>
+                            <source_model>Orba_Sheepla_Model_Order_Status_Sync</source_model>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </status_to_sync>
+                        <status_after_sync translate="label">
+                            <label>Change status after synchronization to</label>
+                            <comment>Change order status after Sheepla synchronization to current selected value.</comment>
+                            <source_model>Orba_Sheepla_Model_Order_Status_Change</source_model> 
+                            <frontend_type>select</frontend_type>
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </status_after_sync>
+                        <!-- deprecated from 0.9.5
+                        <show_label_at_checkout translate="label">
+                            <label>Sheepla label at checkout</label>
+                            <comment></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </show_label_at_checkout>
+                        <custom_label translate="label">
+                            <label>Custom label at checkout</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>25</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </custom_label>
+                        -->
+                        <carrier_label translate="label">
+                            <label>Carrier label at checkout</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>9</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </carrier_label>
+                        <additional_css translate="label">
+                            <label>Additional css in checkout</label>
+                            <comment></comment>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </additional_css>
+                    </fields>
+                </advanced>
+            </groups>
+        </sheepla>
+    </sections>
+</config>

@@ -1,0 +1,20 @@
+<?php
+    
+    $layout = Mage::App()->getLayout();
+    
+    $sheeplaBlock = $layout->createBlock( 'Orba_Sheepla_Block_Admin_Shipment' );
+    
+    if( $sheeplaBlock->isSheeplaSupported() ) {
+        
+        $sheeplaBlock->setTemplate( 'sheepla/shipment.phtml' );
+        
+         echo $sheeplaBlock->renderView();
+         echo '<br/>';
+    }
+    
+    ?>
+
+<?php
+
+$this->setTemplate( 'sales/order/view/tab/info.phtml' );
+echo $this->renderView();

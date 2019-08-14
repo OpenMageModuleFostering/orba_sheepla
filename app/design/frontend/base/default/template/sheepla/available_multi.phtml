@@ -1,0 +1,236 @@
+<?php
+/**
+ * 	Created by ORBA|we-commerce your business -> orba.pl
+ */
+$temp = array();
+$groups = array();
+$shConf = array();
+$showSheepla = false;
+?>
+<script type="text/javascript">
+    //<![CDATA[
+    var tmp_id = -1;
+    var tmp_interval = new Array();
+    if (typeof lastPrice == 'undefined') {
+        lastPrice = false;
+    }
+    if (typeof quoteBaseGrandTotal == 'undefined') {
+        quoteBaseGrandTotal = false;
+    }
+    //]]>
+</script>
+<div class="multiple-checkout">
+    <div class="page-title">
+        <h1><?php echo $this->__('Select Shipping Method') ?></h1>
+    </div>
+    <?php echo $this->getChildHtml('sheepla.container') ?>
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="shipping_method_form">
+        <?php foreach ($this->getAddresses() as $_index => $_address): ?>
+
+            <?php $area = 'sheepla-sdk-area-' . $_address->getAddressId(); ?>
+            <div class="col2-set">
+                <h2 class="legend"><?php echo $this->__('Address %s of %s', ($_index + 1), $this->getAddressCount()) ?></h2>
+                <div class="col-1 col-narrow">
+                    <div class="box">
+                        <div class="box-title">
+                            <h3><?php echo $this->__('Shipping To') ?> <span class="separator">|</span> <a href="<?php echo $this->getAddressEditUrl($_address) ?>"><?php echo $this->__('Change') ?></a></h3>
+                        </div>
+                        <div class="box-content">
+                            <address><?php echo $_address->format('html') ?></address>
+                        </div>
+                    </div>
+                    <div class="box box-sp-methods">
+                        <div class="pointer"></div>
+                        <div class="box-title">
+                            <h3><?php echo $this->__('Shipping Method') ?></h3>
+                        </div>
+                        <div class="box-content">
+                            <?php if (!($_shippingRateGroups = $this->getShippingRates($_address))): ?>
+                                <p><?php echo $this->__('Sorry, no quotes are available for this order at this time.') ?></p>
+                            <?php else: ?>
+                                <dl class="sp-methods">
+                                    <?php
+                                    $_sole = count($_shippingRateGroups) == 1;
+                                    foreach ($_shippingRateGroups as $code => $_rates):
+                                        ?>
+                                        <dt>
+                                        <?php if ($code == 'sheepla'): ?>
+                                            <!-- group and sort sheepla rates -->
+                                            <?php
+                                            $temp = array();
+                                            $groups = array();
+                                            $shConf = array();
+                                            $showSheepla = false;
+
+                                            foreach ($_rates as $_rate) {
+                                                $conf = Mage::getStoreConfig('sheepla/' . $_rate->getMethod());
+                                                if($conf['hidden'] == 0 && $conf['enabled'] == 1) {
+                                                    $shConf[$_rate->getCode()] = $conf;
+                                                }
+                                            }
+                                            ?>
+
+                                            <?php if ($showSheepla): ?>
+                                                <p><?php echo $this->__('Robust delivery by'); ?> <b>Sheepla</b></p>
+                                            <?php endif; ?>
+
+                                        <?php else: ?>
+                                            <?php echo $this->getCarrierName($code) ?>
+            <?php endif; ?>
+                                        </dt>
+                                        <dd>
+                                            <ul>
+                                                <?php
+                                                $_sole = $_sole && count($_rates) == 1;
+                                                foreach ($_rates as $_rate):
+                                                    ?>
+                                                        <?php $shippingCodePrice[] = "'" . $_rate->getCode() . "':" . (float) $_rate->getPrice(); ?>
+                                                    <li>
+                                                        <?php if ($_rate->getErrorMessage()): ?>
+                                                            <ul class="messages"><li class="error-msg"><ul><li><?php echo $_rate->getErrorMessage() ?></li></ul></li></ul>
+                                                        <?php else: ?>
+                                                            <?php if ($_sole) : ?>
+                                                                <input class="no-display" name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>" checked="checked" />
+                        <?php if (key_exists($_rate->getCode(), $shConf) && !empty($shConf[$_rate->getCode()]['template_id'])): ?> 
+
+                                                                    <script type="text/javascript">
+                                                                        //<![CDATA[		
+                                                                        sheepla.query(document).ready(function() {
+                                                                            tmp_interval['<?php echo $area; ?>'] = setInterval(function() {
+                                                                                if (tmp_id != tmp_address_id) {
+                                                                                    tmp_id = tmp_address_id;
+                                                                                    sheepla_onclick('<?php echo $shConf[$_rate->getCode()]['template_id']; ?>', '#<?php echo $area; ?>', null, '#s_method_<?php echo $_rate->getCode() ?>');
+                                                                                    clearInterval(tmp_interval['<?php echo $area; ?>']);
+                                                                                    tmp_interval['<?php echo $area; ?>'] = false;
+                                                                                }
+                                                                            }, 50);
+                                                                        });
+                                                                        //]]>
+                                                                    </script><?php endif; ?>
+                    <?php else: ?>
+                                                                <input name="shipping_method[<?php echo $_address->getId() ?>]" 
+                                                                       type="radio" 
+                                                                       value="<?php echo $_rate->getCode() ?>" 
+                                                                       id="s_method_<?php echo $_rate->getCode() ?>"
+                                                                       <?php if ($_rate->getCode() === $this->getAddressShippingMethod($_address)) echo ' checked="checked"' ?> 
+                                                                       class="radio" 
+                                                                       <?php if (key_exists($_rate->getCode(), $shConf) && !empty($shConf[$_rate->getCode()]['template_id'])): ?> 
+                                                                           onclick="sheepla_onclick('<?php echo $shConf[$_rate->getCode()]['template_id']; ?>', '#<?php echo $area; ?>', null, '#s_method_<?php echo $_rate->getCode() ?>');"
+                                                                       <?php else: ?>
+                                                                           onclick="sheepla_onclick(false, '#<?php echo $area; ?>', null, null, '#s_method_<?php echo $_rate->getCode() ?>');"
+                                                                <?php endif; ?>
+                                                                       />
+
+                        <?php if ($_rate->getCode() === $this->getAddressShippingMethod($_address)): ?>
+                                                                    <script type="text/javascript">
+                                                                        //<![CDATA[
+                            <?php if (key_exists($_rate->getCode(), $shConf) && !empty($shConf[$_rate->getCode()]['template_id'])): ?>
+                                                                            sheepla.query(document).ready(function() {
+                                                                                tmp_interval['<?php echo $area; ?>'] = setInterval(function() {
+                                                                                    if (tmp_id != tmp_address_id) {
+                                                                                        tmp_id = tmp_address_id;
+                                                                                        sheepla_onclick('<?php echo $shConf[$_rate->getCode()]['template_id']; ?>', '#<?php echo $area; ?>');
+                                                                                        clearInterval(tmp_interval['<?php echo $area; ?>']);
+                                                                                        tmp_interval['<?php echo $area; ?>'] = false;
+                                                                                    }
+                                                                                }, 50);
+                                                                            });
+                            <?php endif; ?>
+                                                                        lastPrice = <?php echo (float) $_rate->getPrice(); ?>;
+                                                                        //]]>
+                                                                    </script>
+                                                                <?php endif; ?>
+
+                                                                <?php endif; ?>
+                                                            <label for="s_method_<?php echo $_rate->getCode() ?>"><?php echo $_rate->getMethodTitle() ?>
+                                                                <?php $_excl = $this->getShippingPrice($_address, $_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
+                                                                <?php $_incl = $this->getShippingPrice($_address, $_rate->getPrice(), true); ?>
+                                                                <?php echo $_excl; ?>
+                                                                <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                                                                    (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                                                            <?php endif; ?>
+                                                            </label>
+
+                <?php endif ?>
+
+
+                                                    </li>
+                                            <?php endforeach; ?>
+                                            </ul>
+                                            <?php if ($showSheepla): ?>
+                                                <?php $showSheepla = false; ?>
+                                                <div id="<?php echo $area; ?>" class="sheepla-sdk-area-multi"></div>
+                                        <?php endif; ?>
+                                        </dd>
+                                <?php endforeach; ?>
+                                </dl>
+    <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2 col-wide">
+    <?php echo $this->helper('giftmessage/message')->getInline('multishipping_adress_checkbox', $_address); ?>
+                    <h3><?php echo $this->__('Items') ?> <span class="separator">|</span> <a href="<?php echo $this->getItemsEditUrl($_address) ?>"><?php echo $this->__('Edit Items') ?></a></h3>
+                    <table class="data-table" id="shipping-table-<?php echo $_address->getId() ?>">
+                        <col />
+                        <col width="1" />
+                        <thead>
+                            <tr>
+                                <th><?php echo $this->__('Product Name') ?></th>
+                                <th class="a-center"><?php echo $this->__('Qty') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                    <?php foreach ($this->getAddressItems($_address) as $_item): ?>
+                                <tr>
+                                    <td>
+        <?php echo $this->getItemHtml($_item->getQuoteItem()) ?>
+                                    </td>
+                                    <td class="a-center"><?php echo $_item->getQty() ?></td>
+                                </tr>
+    <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <script type="text/javascript">decorateTable('shipping-table-<?php echo $_address->getId() ?>')</script>
+            <?php echo $this->helper('giftmessage/message')->getInline('multishipping_adress', $_address); ?>
+                </div>
+            </div>
+<?php endforeach; ?>
+<?php echo $this->getChildHtml('checkout_billing_items') ?>
+        <div class="buttons-set">
+            <p class="back-link"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back to Select Addresses') ?></a></p>
+            <button type="submit" title="<?php echo $this->__('Continue to Billing Information') ?>" class="button"><span><span><?php echo $this->__('Continue to Billing Information') ?></span></span></button>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    //<![CDATA[
+<?php if (!empty($shippingCodePrice)): ?>
+        var shippingCodePrice = {<?php echo implode(',', $shippingCodePrice); ?>};
+<?php endif; ?>
+
+    $$('input[type="radio"][name^="shipping_method"]').each(function(el) {
+        Event.observe(el, 'click', function() {
+            if (el.checked == true) {
+                var getShippingCode = el.getValue();
+<?php if (!empty($shippingCodePrice)): ?>
+                    var newPrice = shippingCodePrice[getShippingCode];
+                    if (!lastPrice) {
+                        lastPrice = newPrice;
+                        quoteBaseGrandTotal += newPrice;
+                    }
+                    if (newPrice != lastPrice) {
+                        quoteBaseGrandTotal += (newPrice - lastPrice);
+                        lastPrice = newPrice;
+                    }
+<?php endif; ?>
+                checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
+                return false;
+            }
+
+
+        });
+    });
+    //]]>
+</script>

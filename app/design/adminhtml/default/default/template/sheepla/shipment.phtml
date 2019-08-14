@@ -1,0 +1,51 @@
+<?php
+/**
+ * 	Created by ORBA|we-commerce your business -> orba.pl
+ */
+?>
+<?php if ($this->isSheeplaSupported()): ?>
+    
+    <!--Imponujemy standardowy plik css dla pluginu sheepla-->
+    <link rel="stylesheet" type="text/css" href="<?php echo Mage::getStoreConfig( 'sheepla/api_config/api_widget_css'); ?>"> 
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('sheepla'); ?>/custom_admin.css">
+    <!--Importujemy bibliotekę JavaScript--> 
+    <!--Importujemy bibliotekę JavaScript-->
+    <script type="text/javascript" src="<?php echo Mage::getStoreConfig( 'sheepla/api_config/api_widget_js'); ?>"></script>
+
+    <!--Otwieramy blok kodu typu javascript-->
+    <script type="text/javascript">
+        
+        //tworzymy obiekt konfiguracji dla obienktu sheepla
+        sheepla.config = {
+            apikey: '<?php echo Mage::getStoreConfig( 'sheepla/api_config/api_key' ); ?>',
+            cultureId: '<?php echo Mage::helper('sheepla/data')->getCultureIdByLocaleCode(Mage::app()->getLocale()->getLocaleCode()); ?>'
+        };
+        //inicjalizujemy obiekt sheepla
+        sheepla.init();
+    </script>
+
+
+<?php endif; ?>
+<!--Shipping Address-->
+<div class="entry-edit">
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-shipping-method">Sheepla</h4>
+    </div>
+    <?php if ($this->isSheeplaSupported()): ?>
+        <div class="sheepla-sdk-area grid"><?php echo $this->__('Please wait'); ?></div>
+        <script type="text/javascript">
+            sheepla.call_registry.one = function () {
+                sheepla.get_shipment_status_by_order_id('<?php echo $this->getOrderId(); ?>', '.sheepla-sdk-area','standard',1,1);
+            }
+        </script>
+
+        <div style="margin-top:20px;text-align:right;"> 
+            <button type="button" class="scalable save" onclick="window.location = ('<?php echo $this->getUrl("adminhtml/sales_order_shipment/generateSheeplaShipment", array("shipment_id" => $this->getShipmentId())); ?>')" style=""><span><?php echo $this->__('Create another Sheepla shipment'); ?></span></button>
+        </div>
+
+    <?php else: ?>
+        <fieldset>
+            <p><?php echo $this->__('This shipping method is set-up not to be automated by Sheepla. You can change this by assiging a template to this method. This can be dane using Admin > Configuration > Sheepla tab. All Sheepla shipments that were created earlier for this order can be viewed in Sales > Sheepla tab.'); ?></p>
+        </fieldset>
+    <?php endif; ?>
+</div>

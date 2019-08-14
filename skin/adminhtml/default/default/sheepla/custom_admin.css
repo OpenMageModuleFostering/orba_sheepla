@@ -1,0 +1,56 @@
+/* Powered by sheepla.com */
+
+.sheepla-widget-add-shipment-button{
+	display:none;
+}
+
+#sheepla-widget-shipment-simple-tab{
+	margin-top:0px;
+}
+#sheepla-widget-shipment-simple-tab .sheepla-widget-first{
+	width:200px;
+}
+
+.sheepla-sdk-area {
+    padding-top: 20px;
+}
+
+
+
+
+#sheepla_method_1_payment,
+#sheepla_method_2_payment,
+#sheepla_method_3_payment,
+#sheepla_method_4_payment,
+#sheepla_method_5_payment,
+#sheepla_method_6_payment,
+#sheepla_method_7_payment,
+#sheepla_method_8_payment,
+#sheepla_method_9_payment,
+#sheepla_method_10_payment,
+
+#sheepla_method_1_specificcountry,
+#sheepla_method_2_specificcountry,
+#sheepla_method_3_specificcountry,
+#sheepla_method_4_specificcountry,
+#sheepla_method_5_specificcountry,
+#sheepla_method_6_specificcountry,
+#sheepla_method_7_specificcountry,
+#sheepla_method_8_specificcountry,
+#sheepla_method_9_specificcountry,
+#sheepla_method_10_specificcountry
+
+{
+    height: 100px;
+}
+
+.sheepla_drag_active {
+    cursor: all-scroll;
+}
+.sheepla_delivery_method_menu button {
+    margin: 10px 5px 5px 5px;
+}
+
+.entry-edit > .section-config:nth-last-child .sheepla_delivery_method_menu > .sheepla_remove_shipping {
+    display: none;
+}

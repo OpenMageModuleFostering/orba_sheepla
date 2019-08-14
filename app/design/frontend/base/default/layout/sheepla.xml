@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<layout version="0.1.3">
+    
+    <!-- magento onepage checkout -->
+    <checkout_onepage_index>
+        <reference name="content">
+            <block type="page/html" name="sheepla.container" template="sheepla/container.phtml" before="checkout.onepage"></block>
+        </reference>
+    </checkout_onepage_index>
+    <threesteps_checkout_additionals>
+        <reference name="content">
+            <block type="page/html" name="sheepla.container" template="sheepla/container.phtml" before="threesteps_progress"></block>
+        </reference>
+    </threesteps_checkout_additionals>
+    
+    <checkout_onepage_shippingmethod>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>sheepla/available.phtml</template>
+            </action>
+        </reference>
+    </checkout_onepage_shippingmethod>
+    <checkout_multishipping_shipping>
+        <reference name="checkout_shipping">
+            <action method="setTemplate">
+                <template>sheepla/available_multi.phtml</template>
+            </action>
+            <block type="page/html" name="sheepla.container" template="sheepla/container.phtml"></block>
+        </reference>
+    </checkout_multishipping_shipping>
+    
+    
+    
+    <!-- idev onestepcheckout integration -->
+    <onestepcheckout_index_index>
+        <reference name="content">
+            <block type="page/html" name="sheepla.container" template="sheepla/container.phtml" before="onestepcheckout.checkout"></block>
+        </reference>
+        <reference name="choose-shipping-method">
+            <action method="setTemplate">
+                <template>sheepla/available_idev_onestepcheckout.phtml</template>
+            </action>
+        </reference>
+    </onestepcheckout_index_index>
+    <onestepcheckout_ajax_save_billing>
+        <reference name="choose-shipping-method">
+            <action method="setTemplate">
+                <template>sheepla/available_idev_onestepcheckout.phtml</template>
+            </action>
+        </reference>
+    </onestepcheckout_ajax_save_billing>
+    
+    <!-- gomage lightcheckout -->
+    <gomage_checkout_onepage_index>
+        <reference name="content">
+            <block type="page/html" name="sheepla.container" template="sheepla/container.phtml" before="onestepcheckout.checkout"></block>
+        </reference>
+        <reference name="checkout.onepage.shipping_method.available">
+            <action method="setTemplate">
+                <template>sheepla/available.phtml</template>
+            </action>
+        </reference>
+    </gomage_checkout_onepage_index>
+    
+    
+    
+    <!-- tracking widget 
+    <sales_order_view>
+        <reference name="my.account.wrapper">
+            <block type="sheepla/sales_order_widget" name="sheepla.trackingwidget" template="sheepla/tracking_widget.phtml" after="sales.order.info"></block>
+        </reference>
+    </sales_order_view> -->
+    
+</layout>

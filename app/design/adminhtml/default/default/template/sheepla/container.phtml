@@ -1,0 +1,123 @@
+<?php
+/**
+ * 	Created by ORBA|we-commerce your business -> orba.pl
+
+ * http://panel.sheepla.pl/Content/GetWidgetAPIJavaScript
+  http://panel.sheepla.pl/Content/GetWidgetAPICss
+ * 
+ *  */
+
+if (Mage::getConfig()->getModuleConfig('Orba_Sheepla')->is('active', 'true')):
+
+    $old_sheepla_data = Mage::helper('sheepla')->getOldSheeplaData();
+    ?>
+    
+    <link rel="stylesheet" type="text/css" href="<?php echo Mage::getStoreConfig('sheepla/api_config/api_widget_css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('sheepla'); ?>/custom_admin.css">
+    <!--Importujemy bibliotekę JavaScript-->
+    <script type="text/javascript" src="<?php echo Mage::getStoreConfig('sheepla/api_config/api_widget_js'); ?>"></script>
+
+    <!--Otwieramy blok kodu typu javascript-->
+    <script type="text/javascript">
+        
+        //tworzymy obiekt konfiguracji dla obienktu sheepla
+        sheepla.config = {
+            apikey: '<?php echo Mage::getStoreConfig( 'sheepla/api_config/public_api_key' ) ?>',
+            cultureId: '<?php echo Mage::helper('sheepla/data')->getCultureIdByLocaleCode(Mage::app()->getLocale()->getLocaleCode()); ?>'
+        };
+        //inicjalizujemy obiekt sheepla
+        sheepla.init();
+
+        sheepla.user.after_draw_special = function(area) {
+
+            sheepla.query('.order-totals-bottom').show();
+
+            //setup validators
+
+            if (sheepla.query('#sheepla-widget-plinpost-paczkomat').length != 0) {
+                sheepla.query('#sheepla-widget-plinpost-paczkomat').addClass('input-text required-entry');
+    <?php if (isset($old_sheepla_data['do_pl_inpost_machine_id'])): ?>
+                    sheepla.query('#sheepla-widget-plinpost-paczkomat').val('<?php echo $old_sheepla_data['do_pl_inpost_machine_id']; ?>');
+    <?php endif; ?>
+            }
+
+            if (sheepla.query('#sheepla-widget-plinpost-form-agree-checkbox').length != 0) {
+                sheepla.query('#sheepla-widget-plinpost-form-agree-checkbox').addClass('input-checkbox required-entry');
+            }
+
+
+            if (sheepla.query('#sheepla-widget-ruqiwipost-paczkomat').length != 0) {
+                sheepla.query('#sheepla-widget-ruqiwipost-paczkomat').addClass('input-text required-entry');
+    <?php if (isset($old_sheepla_data['do_ru_qiwi_post_machine_id'])): ?>
+                    sheepla.query('#sheepla-widget-ruqiwipost-paczkomat').val('<?php echo $old_sheepla_data['do_ru_qiwi_post_machine_id']; ?>');
+    <?php endif; ?>
+            }
+
+        };
+
+        var body_top = 0;
+
+        sheepla.user.before.ui.lock_screen = function() {
+            body_top = sheepla.query("html, body").scrollTop();
+        }
+
+        sheepla.user.after.ui.unlock_screen = function() {
+            sheepla.query("html, body").animate({scrollTop: body_top}, 0);
+        }
+
+        function sheepla_payment_method_change() {
+            sheepla.query(".sp-methods dd").hide();
+            var dd = sheepla.query(".sp-methods input[type=radio]:checked").parent("dt").next();
+            if (dd.is("dd")) {
+                dd.show().children().show();
+            }
+        }
+
+        function sheepla_onclick( templateId , containerClass , city , shippingMethod , chosenPickpoint , checkoutPricingHashSession) {
+
+            //assigned method with sheepla template
+            if (templateId) {
+                sheepla.query(containerClass).slideDown();
+
+                var optionsArray = Array();
+                optionsArray = {
+                    city: city,
+                    pickup_id: chosenPickpoint,
+                    checkoutPricingHashSession: checkoutPricingHashSession
+                };
+                console.log(optionsArray);
+                sheepla.get_map_widget(templateId, containerClass, optionsArray );
+
+                
+                if (typeof sheepla.vars.reloadPaymentMethods != 'undefined' && sheepla.vars.reloadPaymentMethods) {
+                    sheepla.query('#shipping-method-buttons-container').hide();
+                    sheepla.ui.lock_area("#checkout-payment-method-load");
+                    sheepla.query.ajax({
+                        data: {'shipping_method': shippingMethod},
+                        type: 'POST',
+                        url: '<?php echo Mage::getUrl('sheepla/checkout/getPaymentMethods'); ?>',
+                        success: function(data) {
+                            var parent = sheepla.query("#checkout-payment-method-load").parent();
+                            sheepla.query("#checkout-payment-method-load").remove();
+                            parent.append(data);
+                            if (!sheepla.vars.im_getting_specials) {
+                                sheepla.query('#shipping-method-buttons-container').show();
+                            }
+                        }
+                    });
+                }
+
+            } else { //flat method
+                sheepla.query(containerClass).slideUp();
+            }
+        }
+
+
+        sheepla.query(document).ready(function() {
+            sheepla.query( "#order-shipping-method-info a" ).click();
+            sheepla.query( "#order-shipping-method-choose input[checked=checked]" ).click();
+            
+            
+    });
+    </script>
+<?php endif; ?>

@@ -119,6 +119,10 @@ if (Mage::getConfig()->getModuleConfig('Orba_Sheepla')->is('active', 'true')):
 	    if (sheepla.query('#sheepla-widget-crossborder-paczkomat' + sufix).length != 0) {
                 sheepla.query('#sheepla-widget-crossborder-paczkomat' + sufix).addClass('input-text required-entry');
             }
+            
+            if (sheepla.query('#sheepla-widget-plpocztapolskav2-paczkomat' + sufix).length != 0) {
+                sheepla.query('#sheepla-widget-plpocztapolskav2-paczkomat' + sufix).addClass('input-text required-entry');
+            }
         };
 
         function sheepla_payment_method_change() {

@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Orba_Sheepla",
+    "name": "OpenMageModuleFostering\/Orba_Sheepla",
     "type": "magento-module",
     "license": "Open-Software-License-(OSL-3.0)",
     "homepage": "",
     "description": "Sheepla integration module for logistics automation.",
     "authors": [
-    {
-        "name": "ORBA",
-        "email": "magento@orba.pl"
-    }
-],
+        {
+            "name": "ORBA",
+            "email": "magento@orba.pl"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
